@@ -1,0 +1,21 @@
+services:
+  postgres:
+    build: .
+    container_name: capstone-postgres
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: capstone_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - capstone-network
+
+volumes:
+  postgres-data:
+
+networks:
+  capstone-network:
+    driver: bridge

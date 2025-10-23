@@ -1,0 +1,35 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: springboot-jpa
+  config:
+    import: optional:file:.env
+  jpa:
+    hibernate:
+      ddl-auto: update   # [none | validate | update | create | create-drop]
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+        use-new-id-generator-mappings: true
+  datasource:
+    hikari:
+      auto-commit: false
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+# ?? env ?? ??
+jwt:
+  secret: ${JWT_SECRET:3f1e2a0e-8e8f-4c0a-9d3f-b3fae09e6d5a}
+  access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:PT2H}
+  refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:PT168H}
+
+cookie:
+  secure: false
+
+server:
+  port: 8080
