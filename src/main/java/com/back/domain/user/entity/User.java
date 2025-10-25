@@ -5,8 +5,13 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -43,11 +48,38 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updatedAt;   // 수정 날짜
 
+    @Builder.Default
+    @Column(nullable = false, length = 20)
+    private String role = "USER";
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return Objects.equals(id, user.id);
+    }
+
+    public boolean isAdmin() {
+        return "ADMIN".equalsIgnoreCase(role);
+    }
+
+    private List<String> getAuthoritiesAsStringList() {
+        List<String> authorities = new ArrayList<>();
+        if (isAdmin()) {
+            authorities.add("ADMIN");
+        } else {
+            authorities.add("USER");
+        }
+        return authorities;
+    }
+
+    // Member의 role을 Security가 사용하는 ROLE_ADMIN, ROLE_USER 형태로 변환
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getAuthoritiesAsStringList()
+                .stream()
+                .map(auth -> new SimpleGrantedAuthority("ROLE_" + auth))
+                .toList();
     }
 
     @Override

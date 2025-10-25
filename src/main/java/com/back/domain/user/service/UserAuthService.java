@@ -47,6 +47,7 @@ public class UserAuthService {
                 .nickname(nickname)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
+                .role("USER")
                 .oauthId(oauthId)
                 .build();
 

@@ -126,6 +126,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                     user.getId(),
                     user.getEmail(),
                     user.getNickname(),
+                    java.util.Collections.emptyList(), // authorities - 권한 정보
                     Map.of() // JWT 인증에서는 빈 attributes
             );
 

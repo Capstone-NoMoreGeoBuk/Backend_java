@@ -18,9 +18,6 @@ public class SecurityUser extends User implements OAuth2User {
     @Getter
     private String email;
 
-    @Getter
-    private boolean isFirstLogin;
-
     private Map<String, Object> attributes;
 
     // OAuth2 전용 생성자 (패스워드 없음)
@@ -28,7 +25,6 @@ public class SecurityUser extends User implements OAuth2User {
             long id,
             String email,
             String nickname,
-            boolean isFirstLogin,
             Collection<? extends GrantedAuthority> authorities,
             Map<String, Object> attributes
     ) {
@@ -41,7 +37,6 @@ public class SecurityUser extends User implements OAuth2User {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
-        this.isFirstLogin = isFirstLogin;
         this.attributes = attributes;
     }
 

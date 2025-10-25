@@ -11,9 +11,11 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -26,8 +28,23 @@ public class SecurityConfig {
     @Value("${custom.dev.backUrl}")
     private String backUrl;
 
-    public SecurityConfig() {}
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2LoginSuccessHandler oauth2SuccessHandler;
+    private final CustomOAuth2LoginFailureHandler oauth2FailureHandler;
+    private final CustomOAuth2AuthorizationRequestResolver customOAuth2AuthorizationRequestResolver;
+    private final CustomAuthenticationFilter customAuthenticationFilter;
 
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
+                          CustomOAuth2LoginSuccessHandler oauth2SuccessHandler,
+                          CustomOAuth2LoginFailureHandler oauth2FailureHandler,
+                          CustomOAuth2AuthorizationRequestResolver customOAuth2AuthorizationRequestResolver,
+                          CustomAuthenticationFilter customAuthenticationFilter) {
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.oauth2SuccessHandler = oauth2SuccessHandler;
+        this.oauth2FailureHandler = oauth2FailureHandler;
+        this.customOAuth2AuthorizationRequestResolver = customOAuth2AuthorizationRequestResolver;
+        this.customAuthenticationFilter = customAuthenticationFilter;
+    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -77,6 +94,22 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(
+                frontUrl,
+                backUrl
+        ));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 }
