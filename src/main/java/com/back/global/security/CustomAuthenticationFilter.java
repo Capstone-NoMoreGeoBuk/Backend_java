@@ -99,7 +99,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                             .id(userId)
                             .email(email)
                             .nickname(nickname)
-                            .role("USER")
                             .build();
 
                     log.debug("User extracted - ID: {}, Email: {}, Nickname: {}", userId, email, nickname);
@@ -127,8 +126,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                     user.getId(),
                     user.getEmail(),
                     user.getNickname(),
-                    user.isFirstLogin(),
-                    user.getAuthorities(),
                     Map.of() // JWT 인증에서는 빈 attributes
             );
 

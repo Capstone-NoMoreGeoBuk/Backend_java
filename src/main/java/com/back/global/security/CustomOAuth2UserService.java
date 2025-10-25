@@ -70,7 +70,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 user.getId(),
                 userEmail,
                 user.getNickname(),
-                user.isFirstLogin(),
                 user.getAuthorities(),
                 oAuth2User.getAttributes()
         );

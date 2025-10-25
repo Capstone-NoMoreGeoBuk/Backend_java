@@ -20,9 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Set;
 
-import static org.springframework.security.core.context.SecurityContextHolder.*;
+import static org.springframework.security.core.context.SecurityContextHolder.clearContext;
 
 @Slf4j
 @Service
@@ -125,8 +124,6 @@ public class UserAuthService {
                             RefreshTokenResDto.UserInfoDto.builder()
                                     .id(user.getId().toString())
                                     .nickname(user.getNickname())
-                                    .isFirstLogin(user.isFirstLogin())
-                                    .abvDegree(user.getAbvDegree())
                                     .build()
                     )
                     .build();
@@ -164,12 +161,6 @@ public class UserAuthService {
         log.info("로그아웃 완료 - JWT, 세션, SecurityContext 모두 정리됨");
     }
 
-    @Transactional
-    public void setFirstLoginFalse(Long id) {
-        Optional<User> userOpt = userRepository.findById(id);
-        userOpt.ifPresent(user -> user.setFirstLogin(false));
-    }
-
     // 현재 로그인한 사용자 정보 조회 (세션 검증용)
     // 변경: 항상 200 응답, 비로그인 시 user: null 반환
     public UserMeResDto getCurrentUser() {
@@ -201,8 +192,6 @@ public class UserAuthService {
                             .id(user.getId().toString())
                             .email(user.getEmail())
                             .nickname(user.getNickname())
-                            .isFirstLogin(user.isFirstLogin())
-                            .abvDegree(user.getAbvDegree())
                             .provider(provider)
                             .build())
                     .build();

@@ -28,16 +28,7 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
         // Access Token과 Refresh Token 발급
         userAuthService.issueTokens(response, securityUser.getId(), securityUser.getEmail(), securityUser.getNickname());
 
-        boolean isFirstLogin = securityUser.isFirstLogin();
+        response.sendRedirect(frontendUrl + "/login/user/success");
 
-        if (isFirstLogin) {
-            // DB에서 isFirstLogin을 false로 업데이트
-            userAuthService.setFirstLoginFalse(securityUser.getId());
-            // 첫 로그인이므로 first-user 페이지로 리다이렉트
-            response.sendRedirect(frontendUrl + "/login/user/first-user");
-        } else {
-            // 기존 사용자는 success 페이지로 리다이렉트
-            response.sendRedirect(frontendUrl + "/login/user/success");
-        }
     }
 }
