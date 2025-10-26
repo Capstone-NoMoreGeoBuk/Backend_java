@@ -7,7 +7,7 @@ spring:
     name: back-java
 
   config:
-    import: optional:file:.env
+    import: optional:file:.env[.properties]
 
   jpa:
     hibernate:
