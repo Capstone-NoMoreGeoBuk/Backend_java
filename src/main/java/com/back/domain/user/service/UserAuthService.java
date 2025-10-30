@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.springframework.security.core.context.SecurityContextHolder.clearContext;
 
@@ -46,7 +47,6 @@ public class UserAuthService {
                 .email(email != null ? email : "")
                 .nickname(nickname)
                 .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .role("USER")
                 .oauthId(oauthId)
                 .build();
@@ -72,7 +72,7 @@ public class UserAuthService {
 
     // 리프레시 토큰 관련
 
-    public void issueTokens(HttpServletResponse response, Long userId, String email, String nickname) {
+    public void issueTokens(HttpServletResponse response, UUID userId, String email, String nickname) {
         String accessToken = jwtUtil.generateAccessToken(userId, email, nickname);
         String refreshToken = refreshTokenService.generateRefreshToken(userId);
 
@@ -103,7 +103,7 @@ public class UserAuthService {
             }
 
             RefreshToken refreshTokenEntity = tokenData.get();
-            Long userId = refreshTokenEntity.getUserId();
+            UUID userId = refreshTokenEntity.getUserId();
 
             // DB에서 사용자 정보 조회
             Optional<User> userOpt = userRepository.findById(userId);

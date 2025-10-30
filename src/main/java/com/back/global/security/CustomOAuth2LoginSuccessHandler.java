@@ -28,7 +28,10 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
         // Access Token과 Refresh Token 발급
         userAuthService.issueTokens(response, securityUser.getId(), securityUser.getEmail(), securityUser.getNickname());
 
-        response.sendRedirect(frontendUrl + "/login/user/success");
+        // 실제 배포시 사용
+        // response.sendRedirect(frontendUrl + "/login/user/success");
 
+        // 프론트엔드 없이 테스트할 수 있도록 백엔드로 리다이렉트
+        response.sendRedirect("/api/auth/login-success");
     }
 }

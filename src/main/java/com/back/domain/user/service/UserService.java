@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -16,13 +18,13 @@ public class UserService {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional(readOnly = true)
-    public User findById(Long id) {
+    public User findById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found. id=" + id));
     }
 
     @Transactional
-    public void deactivateAccount(Long id) {
+    public void deactivateAccount(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ServiceException(404, "사용자를 찾을 수 없습니다."));
 

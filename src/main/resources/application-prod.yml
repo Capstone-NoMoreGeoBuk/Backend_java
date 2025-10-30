@@ -32,7 +32,8 @@ logging:
     com.back: INFO
 
 # 쿠키 보안 설정 (HTTPS 환경용)
+# secure: true / same: "Strict" or "None"
 custom:
   cookie:
-    secure: true
-    same: "Strict"
+    secure: false # 프론트 없이 테스트
+    same: "Lax"

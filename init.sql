@@ -27,6 +27,15 @@ CREATE TABLE profiles (
                           created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 리프레시 토큰 테이블
+CREATE TABLE refresh_tokens (
+                                 token VARCHAR(255) PRIMARY KEY,
+                                 user_id UUID NOT NULL,
+                                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                                 expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+                                 last_used_at TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
 -- 사용자의 대 목표
 CREATE TABLE goals (
                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

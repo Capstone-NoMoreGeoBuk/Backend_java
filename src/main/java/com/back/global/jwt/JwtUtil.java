@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -31,12 +32,12 @@ public class JwtUtil {
         this.cookieDomain = cookieDomain;
     }
 
-    public String generateAccessToken(Long userId, String email, String nickname) {
+    public String generateAccessToken(UUID userId, String email, String nickname) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + accessTokenExpiration);
 
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
+                .setSubject(userId.toString())
                 .claim("email", email)
                 .claim("nickname", nickname)
                 .setIssuedAt(now)
@@ -46,12 +47,12 @@ public class JwtUtil {
     }
 
     // 테스트용: 커스텀 만료시간으로 토큰 생성
-    public String generateAccessTokenWithExpiration(Long userId, String email, String nickname, long customExpirationMs) {
+    public String generateAccessTokenWithExpiration(UUID userId, String email, String nickname, long customExpirationMs) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + customExpirationMs);
 
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
+                .setSubject(userId.toString())
                 .claim("email", email)
                 .claim("nickname", nickname)
                 .setIssuedAt(now)
@@ -101,8 +102,8 @@ public class JwtUtil {
         return false;
     }
 
-    public Long getUserIdFromToken(String token) {
-        return Long.valueOf(parseToken(token).getSubject());
+    public UUID getUserIdFromToken(String token) {
+        return UUID.fromString(parseToken(token).getSubject());
     }
 
     public String getEmailFromToken(String token) {

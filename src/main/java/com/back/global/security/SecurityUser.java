@@ -7,10 +7,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 public class SecurityUser extends User implements OAuth2User {
     @Getter
-    private Long id;
+    private UUID id;
 
     @Getter
     private String nickname;
@@ -22,14 +23,14 @@ public class SecurityUser extends User implements OAuth2User {
 
     // OAuth2 전용 생성자 (패스워드 없음)
     public SecurityUser(
-            long id,
+            UUID id,
             String email,
             String nickname,
             Collection<? extends GrantedAuthority> authorities,
             Map<String, Object> attributes
     ) {
         super(
-                (email != null && !email.isBlank()) ? email : String.valueOf(id), // ★★★ 핵심 수정
+                (email != null && !email.isBlank()) ? email : id.toString(), // ★★★ 핵심 수정
                 "",
                 authorities
         );
