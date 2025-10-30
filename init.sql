@@ -8,12 +8,14 @@ DROP TABLE IF EXISTS sub_goal_completions, goal_schedule_days, summary, goals_su
 -- 1. 테이블 생성
 -- =============================================
 
--- 사용자 계정 정보
+-- 사용자 계정 정보 (OAuth2 기반)
 CREATE TABLE users (
                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                       email VARCHAR(255) UNIQUE NOT NULL,
-                       password_hash VARCHAR(255) NOT NULL,
-                       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                       email VARCHAR(100),
+                       nickname VARCHAR(50) NOT NULL,
+                       oauth_id VARCHAR(100) UNIQUE,
+                       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                       role VARCHAR(20) NOT NULL DEFAULT 'USER'
 );
 
 -- 사용자 프로필 정보 (users와 1:1 관계)
@@ -91,7 +93,7 @@ ALTER TABLE goal_schedule_days ADD CONSTRAINT fk_schedule_goals FOREIGN KEY (goa
 
 -- 사용자 1: 김코딩 (기존 예시)
 WITH user_info AS (
-INSERT INTO users (id, email, password_hash) VALUES ('11111111-1111-1111-1111-111111111111', 'koding.kim@example.com', 'hashed_password') RETURNING id
+INSERT INTO users (id, email, nickname, oauth_id, role) VALUES ('11111111-1111-1111-1111-111111111111', 'koding.kim@example.com', '김코딩', 'google_111111', 'USER') RETURNING id
     ),
     profile_info AS (
 INSERT INTO profiles (user_id, nickname, gender, birthdate) VALUES ((SELECT id FROM user_info), '김코딩', 1, '1995-05-10')
@@ -126,7 +128,7 @@ INSERT INTO goal_schedule_days (goal_id, day_of_week) VALUES
 
 -- 사용자 2: 박해커
 WITH user_info AS (
-INSERT INTO users (id, email, password_hash) VALUES ('44444444-4444-4444-4444-444444444444', 'hacker.park@example.com', 'hashed_password') RETURNING id
+INSERT INTO users (id, email, nickname, oauth_id, role) VALUES ('44444444-4444-4444-4444-444444444444', 'hacker.park@example.com', '박해커', 'kakao_444444', 'USER') RETURNING id
     ),
     profile_info AS (
 INSERT INTO profiles (user_id, nickname, gender, birthdate) VALUES ((SELECT id FROM user_info), '박해커', 2, '2001-11-23')
@@ -150,7 +152,7 @@ INSERT INTO goal_schedule_days (goal_id, day_of_week) VALUES
 
 -- 사용자 3: 이디비
 WITH user_info AS (
-INSERT INTO users (id, email, password_hash) VALUES ('66666666-6666-6666-6666-666666666666', 'db.lee@example.com', 'hashed_password') RETURNING id
+INSERT INTO users (id, email, nickname, oauth_id, role) VALUES ('66666666-6666-6666-6666-666666666666', 'db.lee@example.com', '이디비', 'naver_666666', 'USER') RETURNING id
     ),
     profile_info AS (
 INSERT INTO profiles (user_id, nickname, gender, birthdate) VALUES ((SELECT id FROM user_info), '이디비', 1, '1998-01-15')
@@ -174,7 +176,7 @@ INSERT INTO goal_schedule_days (goal_id, day_of_week) VALUES
 
 -- 사용자 4: 최배포
 WITH user_info AS (
-INSERT INTO users (id, email, password_hash) VALUES ('99999999-9999-9999-9999-999999999999', 'deploy.choi@example.com', 'hashed_password') RETURNING id
+INSERT INTO users (id, email, nickname, oauth_id, role) VALUES ('99999999-9999-9999-9999-999999999999', 'deploy.choi@example.com', '최배포', 'google_999999', 'USER') RETURNING id
     ),
     profile_info AS (
 INSERT INTO profiles (user_id, nickname, gender, birthdate) VALUES ((SELECT id FROM user_info), '최배포', 2, '2003-07-02')
