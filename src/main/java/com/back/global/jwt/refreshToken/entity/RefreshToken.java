@@ -39,6 +39,7 @@ public class RefreshToken {
         return RefreshToken.builder()
                 .token(token)
                 .userId(userId)
+                .createdAt(now)  // ⭐ createdAt 명시적 설정
                 .lastUsedAt(now)
                 .expiresAt(now.plusSeconds(ttlSeconds))
                 .build();

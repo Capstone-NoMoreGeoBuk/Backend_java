@@ -28,7 +28,7 @@ public class CustomOAuth2LoginFailureHandler implements AuthenticationFailureHan
         // String redirectUrl = frontendUrl + "/oauth/error?message=" + exception.getMessage();
 
         // 프론트엔드 없이 테스트할 수 있도록 백엔드로 리다이렉트
-        String redirectUrl = "/api/auth/login-failure?message=" + exception.getMessage();
+        String redirectUrl = "/user/auth/login-failure?message=" + exception.getMessage();
 
         response.sendRedirect(redirectUrl);
     }
