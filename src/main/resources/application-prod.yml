@@ -1,0 +1,39 @@
+spring:
+  # PostgreSQL Database 설정
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:15432/capstone_db
+    username: admin
+    password: admin
+
+  # JPA 설정
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate  # init.sql 스키마 사용
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+# Swagger 설정 (production에서는 비활성화 권장)
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+    org.springframework.transaction.interceptor: DEBUG
+    com.back: INFO
+
+# 쿠키 보안 설정 (HTTPS 환경용)
+# secure: true / same: "Strict" or "None"
+custom:
+  cookie:
+    secure: false # 프론트 없이 테스트
+    same: "Lax"

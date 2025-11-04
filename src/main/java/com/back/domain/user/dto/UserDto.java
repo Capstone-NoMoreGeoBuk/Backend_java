@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -14,11 +15,10 @@ import java.time.LocalDateTime;
 @Builder
 public class UserDto {
 
-    private Long id;
+    private UUID id;
     private String email;
     private String nickname;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public static UserDto from(User user) {
         if (user == null) return null;
@@ -27,7 +27,6 @@ public class UserDto {
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 }

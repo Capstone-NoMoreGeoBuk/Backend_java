@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class RefreshTokenService {
 
     // 기존 리프레시 토큰 삭제하고 생성
     @Transactional
-    public String generateRefreshToken(Long userId) {
+    public String generateRefreshToken(UUID userId) {
         // 기존 토큰 삭제
         refreshTokenRepository.deleteByUserId(userId);
 
@@ -92,7 +93,7 @@ public class RefreshTokenService {
 
     // 사용자 전체 세션(리프레시 토큰) 폐기
     @Transactional
-    public void revokeAllForUser(Long userId) {
+    public void revokeAllForUser(UUID userId) {
         refreshTokenRepository.deleteByUserId(userId);
     }
 

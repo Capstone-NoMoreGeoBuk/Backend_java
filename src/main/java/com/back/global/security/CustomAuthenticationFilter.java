@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -90,7 +91,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             log.debug("Access token is valid");
 
             try {
-                Long userId = jwtUtil.getUserIdFromToken(accessToken);
+                UUID userId = jwtUtil.getUserIdFromToken(accessToken);
                 String email = jwtUtil.getEmailFromToken(accessToken);
                 String nickname = jwtUtil.getNicknameFromToken(accessToken);
 

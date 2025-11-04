@@ -3,7 +3,6 @@ package com.back.domain.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")  // 예약어 충돌 방지를 위해 "users"
@@ -25,8 +25,8 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     // OAuth 동의 범위에 따라 이메일이 없을 수 있어 nullable
     // 여러 provider에서 동일 이메일이 올 수 있으므로 unique 하지 않아도 됨
@@ -43,10 +43,6 @@ public class User {
     @CreatedDate    // JPA Auditing 적용
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;   // 생성 날짜
-
-    @LastModifiedDate    // JPA Auditing 적용
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;   // 수정 날짜
 
     @Builder.Default
     @Column(nullable = false, length = 20)

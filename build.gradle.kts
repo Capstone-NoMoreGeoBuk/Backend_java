@@ -48,6 +48,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.postgresql:postgresql")
 
     annotationProcessor("org.projectlombok:lombok")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0") // swagger

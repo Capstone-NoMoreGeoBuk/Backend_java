@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -21,7 +22,7 @@ public class RefreshToken {
     private String token;
 
     @Column(nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -33,11 +34,12 @@ public class RefreshToken {
     @Column(nullable = false)
     private LocalDateTime lastUsedAt;
 
-    public static RefreshToken create(String token, Long userId, long ttlSeconds) {
+    public static RefreshToken create(String token, UUID userId, long ttlSeconds) {
         LocalDateTime now = LocalDateTime.now();
         return RefreshToken.builder()
                 .token(token)
                 .userId(userId)
+                .createdAt(now)  // ⭐ createdAt 명시적 설정
                 .lastUsedAt(now)
                 .expiresAt(now.plusSeconds(ttlSeconds))
                 .build();

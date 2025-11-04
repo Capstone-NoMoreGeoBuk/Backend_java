@@ -12,10 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Tag(name = "UserAuth", description = "사용자 인증 API")
 @Slf4j
@@ -61,5 +61,85 @@ public class UserAuthController {
     public RsData<UserMeResDto> getCurrentUser() {
         UserMeResDto userInfo = userAuthService.getCurrentUser();
         return RsData.of(200, "인증된 유저 정보 반환 성공", userInfo);
+    }
+
+    // OAuth 로그인 성공 시 리다이렉트되는 엔드포인트 (프론트 없이 테스트용)
+    @GetMapping(value = "/login-success", produces = MediaType.TEXT_HTML_VALUE)
+    public void loginSuccess(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        UserMeResDto userInfo = userAuthService.getCurrentUser();
+
+        String html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>OAuth 로그인 성공</title>
+                <style>
+                    body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+                    .success { color: #28a745; font-size: 24px; margin-bottom: 20px; }
+                    .info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; }
+                    .label { font-weight: bold; color: #495057; }
+                    .value { color: #212529; }
+                    a { color: #007bff; text-decoration: none; }
+                </style>
+            </head>
+            <body>
+                <h1 class="success">✅ OAuth 로그인 성공!</h1>
+                <div class="info">
+                    <p><span class="label">사용자 ID:</span> <span class="value">%s</span></p>
+                    <p><span class="label">이메일:</span> <span class="value">%s</span></p>
+                    <p><span class="label">닉네임:</span> <span class="value">%s</span></p>
+                    <p><span class="label">OAuth 제공자:</span> <span class="value">%s</span></p>
+                </div>
+                <p>✅ Access Token과 Refresh Token이 쿠키에 저장되었습니다.</p>
+                <p><a href="/user/auth/me">📋 /user/auth/me 엔드포인트로 확인하기</a></p>
+                <p><a href="/swagger-ui.html">📚 Swagger UI로 이동</a></p>
+            </body>
+            </html>
+            """.formatted(
+                userInfo.getUser() != null ? userInfo.getUser().getId() : "N/A",
+                userInfo.getUser() != null ? userInfo.getUser().getEmail() : "N/A",
+                userInfo.getUser() != null ? userInfo.getUser().getNickname() : "N/A",
+                userInfo.getUser() != null ? userInfo.getUser().getProvider() : "N/A"
+        );
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().write(html);
+    }
+
+    // OAuth 로그인 실패 시 리다이렉트되는 엔드포인트 (프론트 없이 테스트용)
+    @GetMapping(value = "/login-failure", produces = MediaType.TEXT_HTML_VALUE)
+    public void loginFailure(@RequestParam(required = false) String message, HttpServletResponse response) throws IOException {
+        String html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>OAuth 로그인 실패</title>
+                <style>
+                    body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+                    .error { color: #dc3545; font-size: 24px; margin-bottom: 20px; }
+                    .info { background: #f8d7da; padding: 15px; border-radius: 5px; margin: 10px 0; border: 1px solid #f5c6cb; }
+                    .label { font-weight: bold; color: #721c24; }
+                    .value { color: #721c24; }
+                    a { color: #007bff; text-decoration: none; }
+                </style>
+            </head>
+            <body>
+                <h1 class="error">❌ OAuth 로그인 실패</h1>
+                <div class="info">
+                    <p><span class="label">에러 메시지:</span></p>
+                    <p class="value">%s</p>
+                </div>
+                <p>💡 다시 시도하거나 백엔드 로그를 확인해주세요.</p>
+                <p><a href="/oauth2/authorization/google">🔄 Google 로그인 재시도</a></p>
+                <p><a href="/oauth2/authorization/kakao">🔄 Kakao 로그인 재시도</a></p>
+                <p><a href="/oauth2/authorization/naver">🔄 Naver 로그인 재시도</a></p>
+            </body>
+            </html>
+            """.formatted(message != null ? message : "알 수 없는 오류");
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().write(html);
     }
 }
